@@ -33,7 +33,7 @@ public class ClassificationsHttpClient : IClassificationsClient
     /// <param name="variant">The name of the variant to use instead of the original code list specified.</param>
     /// <param name="selectCodes">selectCodes is used to limit the result to codes that match the pattern given by selectCodes.</param>
     /// <returns></returns>
-    public async Task<ClassificationCodes> GetClassificationCodes(int classificationId, string language = "nb", DateOnly? atDate = null, string level = "", string variant = "",string selectCodes = "")
+    public async Task<ClassificationCodes> GetClassificationCodes(int classificationId, string language = "nb", DateOnly? atDate = null, string level = "", string variant = "", string selectCodes = "")
     {
         string selectLanguage = $"language={language}";
 
@@ -56,7 +56,7 @@ public class ClassificationsHttpClient : IClassificationsClient
         {
             url = $"{classificationId}/variantAt";
         }
-        string query = BuildQuery(selectLanguage, selectDate, selectLevel, selectVariant,selectedCodes);
+        string query = BuildQuery(selectLanguage, selectDate, selectLevel, selectVariant, selectedCodes);
 
         var response = await _httpClient.GetAsync($"{url}{query}");
 
