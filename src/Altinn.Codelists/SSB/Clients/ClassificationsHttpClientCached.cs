@@ -35,13 +35,13 @@ namespace Altinn.Codelists.SSB.Clients
         /// <inheritdoc/>
         public async Task<ClassificationCodes> GetClassificationCodes(int classificationId, string language = "nb", DateOnly? atDate = null, string level = "", string variant = "", string selectCodes = "")
         {
-            var cacheKey = GetCacheKey(classificationId, language, atDate, level, variant,selectCodes);
+            var cacheKey = GetCacheKey(classificationId, language, atDate, level, variant, selectCodes);
 
             var codes = await _memoryCache.GetOrCreateAsync(cacheKey, async cacheEntry =>
             {
                 var cacheEntryOptions = _getCacheEntryOptions.Invoke();
                 cacheEntry.SetOptions(cacheEntryOptions);
-                var data = await _classificationsClient.GetClassificationCodes(classificationId, language, atDate, level, variant,selectCodes);
+                var data = await _classificationsClient.GetClassificationCodes(classificationId, language, atDate, level, variant, selectCodes);
 
                 if (data is null)
                 {
