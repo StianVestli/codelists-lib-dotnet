@@ -62,7 +62,7 @@ public class ClassificationCodelistProvider : IAppOptionsProvider
         string variant = mergedKeyValuePairs.GetValueOrDefault("variant") ?? string.Empty;
         string selectCodes = mergedKeyValuePairs.GetValueOrDefault("selectcodes") ?? string.Empty;
 
-        var classificationCode = await _classificationsClient.GetClassificationCodes(_classificationId, language, dateOnly, level, variant,selectCodes);
+        var classificationCode = await _classificationsClient.GetClassificationCodes(_classificationId, language, dateOnly, level, variant, selectCodes);
 
         string parentCode = mergedKeyValuePairs.GetValueOrDefault("parentCode") ?? string.Empty;
 
