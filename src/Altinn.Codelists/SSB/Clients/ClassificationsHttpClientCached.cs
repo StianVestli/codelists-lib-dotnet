@@ -33,15 +33,15 @@ namespace Altinn.Codelists.SSB.Clients
         }
 
         /// <inheritdoc/>
-        public async Task<ClassificationCodes> GetClassificationCodes(int classificationId, string language = "nb", DateOnly? atDate = null, string level = "", string variant = "", string selectCodes = "")
+        public async Task<ClassificationCodes> GetClassificationCodes(int classificationId, string language = "nb", DateOnly? atDate = null, string level = "", string variant = "", string selectCodes = "", string targetClassificationId = "", string concateChildren = "")
         {
-            var cacheKey = GetCacheKey(classificationId, language, atDate, level, variant, selectCodes);
+            var cacheKey = GetCacheKey(classificationId, language, atDate, level, variant, selectCodes, targetClassificationId,concateChildren);
 
             var codes = await _memoryCache.GetOrCreateAsync(cacheKey, async cacheEntry =>
             {
                 var cacheEntryOptions = _getCacheEntryOptions.Invoke();
                 cacheEntry.SetOptions(cacheEntryOptions);
-                var data = await _classificationsClient.GetClassificationCodes(classificationId, language, atDate, level, variant, selectCodes);
+                var data = await _classificationsClient.GetClassificationCodes(classificationId, language, atDate, level, variant, selectCodes, targetClassificationId, concateChildren);
 
                 if (data is null)
                 {
@@ -55,9 +55,9 @@ namespace Altinn.Codelists.SSB.Clients
             return codes ?? new ClassificationCodes() { Codes = new List<ClassificationCode>() };
         }
 
-        private static string GetCacheKey(int classificationId, string language, DateOnly? atDate, string level, string variant, string selectCodes)
+        private static string GetCacheKey(int classificationId, string language, DateOnly? atDate, string level, string variant, string selectCodes, string targetClassificationId, string concateChildren)
         {
-            return $"{classificationId}_{language}_{atDate?.ToString("yyyy-MM-dd")}_{level}_{variant}_{selectCodes}";
+            return $"{classificationId}_{language}_{atDate?.ToString("yyyy-MM-dd")}_{level}_{variant}_{selectCodes}_{targetClassificationId}_{concateChildren}";
         }
 
         // Expires the cache entry at midnight, to get potential new or removed entries.

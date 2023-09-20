@@ -68,9 +68,9 @@ public class ClassificationsHttpClientMock : IClassificationsClient
         _client = new ClassificationsHttpClient(_options, new HttpClient(HttpMessageHandlerMock));
     }
 
-    public async Task<ClassificationCodes> GetClassificationCodes(int classificationId, string language = "nb", DateOnly? atDate = null, string level = "", string variant = "", string selectCodes = "")
+    public async Task<ClassificationCodes> GetClassificationCodes(int classificationId, string language = "nb", DateOnly? atDate = null, string level = "", string variant = "", string selectCodes = "", string targetClassificationId = "", string concateChildren = "")
     {
-        ClassificationCodes classificationCodes = await _client.GetClassificationCodes(classificationId, language, atDate, level, variant, selectCodes);
+        ClassificationCodes classificationCodes = await _client.GetClassificationCodes(classificationId, language, atDate, level, variant, selectCodes, targetClassificationId, concateChildren);
 
         return level == string.Empty
             ? classificationCodes

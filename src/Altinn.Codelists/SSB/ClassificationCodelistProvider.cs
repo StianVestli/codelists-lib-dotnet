@@ -61,8 +61,10 @@ public class ClassificationCodelistProvider : IAppOptionsProvider
         string level = mergedKeyValuePairs.GetValueOrDefault("level") ?? string.Empty;
         string variant = mergedKeyValuePairs.GetValueOrDefault("variant") ?? string.Empty;
         string selectCodes = mergedKeyValuePairs.GetValueOrDefault("selectcodes") ?? string.Empty;
+        string targetClassificationId = mergedKeyValuePairs.GetValueOrDefault("targetClassificationId") ?? string.Empty;
+        string concateChildren =mergedKeyValuePairs.GetValueOrDefault("concateChildren") ?? string.Empty;
 
-        var classificationCode = await _classificationsClient.GetClassificationCodes(_classificationId, language, dateOnly, level, variant, selectCodes);
+        var classificationCode = await _classificationsClient.GetClassificationCodes(_classificationId, language, dateOnly, level, variant, selectCodes, targetClassificationId, concateChildren);
 
         string parentCode = mergedKeyValuePairs.GetValueOrDefault("parentCode") ?? string.Empty;
 
