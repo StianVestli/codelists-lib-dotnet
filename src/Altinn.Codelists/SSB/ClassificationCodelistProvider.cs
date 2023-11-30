@@ -1,6 +1,7 @@
 ﻿using Altinn.App.Core.Features;
 using Altinn.App.Core.Models;
 using Altinn.Codelists.SSB.Models;
+using System.Globalization;
 
 namespace Altinn.Codelists.SSB;
 
@@ -57,16 +58,36 @@ public class ClassificationCodelistProvider : IAppOptionsProvider
         Dictionary<string, string> mergedKeyValuePairs = MergeDictionaries(_defaultKeyValuePairs, keyValuePairs);
 
         string? date = mergedKeyValuePairs.GetValueOrDefault("date");
-        DateOnly dateOnly = date == null ? DateOnly.FromDateTime(DateTime.Today) : DateOnly.Parse(date);
+        DateOnly dateOnly = date == null ? DateOnly.FromDateTime(DateTime.Today) : DateOnly.Parse(date, CultureInfo.InvariantCulture);
         string level = mergedKeyValuePairs.GetValueOrDefault("level") ?? string.Empty;
         string variant = mergedKeyValuePairs.GetValueOrDefault("variant") ?? string.Empty;
-        string selectCodes = mergedKeyValuePairs.GetValueOrDefault("selectcodes") ?? string.Empty;
+        string selectCodes = mergedKeyValuePairs.GetValueOrDefault("selectCodes") ?? string.Empty;
 
         var classificationCode = await _classificationsClient.GetClassificationCodes(_classificationId, language, dateOnly, level, variant, selectCodes);
 
         string parentCode = mergedKeyValuePairs.GetValueOrDefault("parentCode") ?? string.Empty;
 
         AppOptions appOptions = GetAppOptions(classificationCode, parentCode);
+        appOptions.Parameters = new Dictionary<string, string>(mergedKeyValuePairs);
+
+        // Parameters used added to Parameters collection in AppOptions for reference and documentation purposes.
+        // Add well known parameters first.
+        appOptions.Parameters.TryAdd("id", _classificationId.ToString());
+        appOptions.Parameters.TryAdd("variant", variant);
+        appOptions.Parameters.TryAdd("date", dateOnly.ToString());
+        appOptions.Parameters.TryAdd("language", language);
+        appOptions.Parameters.TryAdd("level", level);
+        appOptions.Parameters.TryAdd("parentCode", parentCode);
+
+        // Add any other parameters.
+        List<string> knownKeys = new () { "id", "variant", "date", "language", "level", "parentCode" };
+        foreach (var keyValuePair in mergedKeyValuePairs)
+        {
+            if (!knownKeys.Contains(keyValuePair.Key))
+            {
+                appOptions.Parameters.TryAdd(keyValuePair.Key, keyValuePair.Value);
+            }
+        }
 
         return appOptions;
     }
